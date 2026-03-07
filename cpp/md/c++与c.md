@@ -311,6 +311,8 @@ valgrind --tool=memcheck --leak-check=full ./a.out
 valgrind --tool=memcheck --leak-check=full --show-reachable=yes ./a.out
 ```
 
+### new申请堆空间
+
 **malloc**
 
 - 只分配内存
@@ -341,3 +343,35 @@ valgrind --tool=memcheck --leak-check=full --show-reachable=yes ./a.out
 
 - 自动调用析构函数
 - 再释放内存
+
+#### 回收空间的对应项
+
+三组申请空间和回收空间的匹配组合
+
+```c++
+malloc            free
+new               delete
+new int[5]()      delete[]
+```
+
+ delete只是回收了指针指向的空间，但这个指针变量依然还在，指向了不确定的空间（野指针），容易造成错误。所以需要进行安全回收，将这个指针设为空指针。C++11之后使用<span style=color:red;background:yellow>**nullptr**</span>表示空指针。
+
+### 引用
+
+在 **C++** 中，**引用（reference）** 是一个已经存在变量的 **别名（alias）**。它并不是新的对象，而是给原变量起了另一个名字，对引用的操作就是对原变量的操作。
+
+其语法是：
+
+```C++
+//定义方式：    类型 & ref = 变量；
+int number = 2；
+int & ref = number;
+```
+
+在使用引用的过程中，要注意以下几点：
+
+1. &在这里不再是取地址符号，而是引用符号
+
+2. 引用的类型需要和其绑定的变量的类型相同（目前这样使用，学习继承后这一条有所不同）
+3. <font color=red>**声明引用的同时，必须对引用进行初始化，否则编译时报错**</font>
+4. <span style=color:red;background:yellow>**引用一经绑定，无法更改绑定**</span>
